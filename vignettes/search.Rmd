@@ -46,7 +46,6 @@ print_credentials()
 If *usernames* and *passwords* are the same for all the portals (our advice), you can set all of them with a single instruction:
 
 ```{r credentials_simultaneous}
-library(rsat)
 set_credentials("rsat.package","UpnaSSG.2021")
 ```
 
@@ -221,10 +220,11 @@ The function automatically generates a new file in the data-set folder which ser
 list.files(ds.path, full.name = TRUE, recursive = TRUE)
 ```
 
-Whenever the `rtoi` is modified, the file is updated. Thus, if the `R` session accidentaly breaks or terminates, the `rtoi` can be loaded using `read_rtoi()`:
+Whenever the `rtoi` is modified, the file is updated. Thus, if the `R` session accidentally breaks or terminates, the `rtoi` can be loaded using `read_rtoi()`:
 
 ```{r}
 rtoi <- read_rtoi(file.path(ds.path, "search_vignette"))
+print(rtoi)
 ```
 
 ### Search with an `rtoi`
@@ -233,32 +233,35 @@ You can use an `rtoi` to search satellite images with `sat_search()`:
 
 ```{r}
 sat_search(region = rtoi,
-           product = c("S2MSI2A"),
+           product = c("S2MSI2A", "LANDSAT_8_C1"),
            dates = toi)
 ```
 
-The `rtoi` is an S6 class object, i.e. it behaves like any object in other programming languages. That is, if the `rtoi` object is used as an argument in a function, the function modifies rtoi and its contents are updated in the main R environment.
+An `rtoi` is an S6 class object, so it behaves like objects in other programming languages. That is, if the `rtoi` is passed as a function argument and the function modifies the `rtoi`, its copy in the main environment is also updated:
 
-After the lookup, the resulting records are stored in the rtoi.
+```{r}
+print(rtoi)
+```
 
-Records can be extracted from the rtoi with the records() function.
+The function `sat_search()` saves the results, i.e. a `records` object, in the `rtoi`. To extract the `records` from the `rtoi` use `records()`:
 
-The filtering mentioned above can be done on the records in the rtoi.
+```{r}
+rcds <- records(rtoi)
+class(rcds)
+```
 
-The plot function supports using the rtoi as an argument.
+If you want to apply further filters on the results, as shown in the previous section, you need to extract the `records` from the `rtoi` first and then apply `c()`, `[]`, `subset()`, and `length()` at your convenience.
 
-This function is more sophisticated with rtoi than with records.
+### Displaying results
 
-The preview mode allows the preview images to be represented.
+The `plot()` function accepts an `rtoi` as an input. It has two modes. When `mode = "preview"`, it shows a low-resolution RGB version of the satellite images. Unlike with `records`, the plot displays all the satellite images available for a given date, even when they are in separate files. The function allows other arguments, such as `product` or `date`, to better select the information being shown:
 
-Unlike records, rtoi previews the images of a region all together.
+```{r}
+plot(rtoi, mode = "preview", product = "S2MSI2A", date = "2021-02-01")
+```
 
-The plot allows other arguments to select the images to be displayed.
+`rtoi`s are designed save information from several missions. The `mode = "dates"` prints a calendar indicating the availability of satellite images from one or multiple missions during the time of interest:
 
-You can select the product or the date with the arguments product and dates.
-
-The rtoi is designed to contain images from several missions.
-
-The dates mode of the plot allows the display of calendars indicating the frequency of satellite images.
-
-Translated with www.DeepL.com/Translator (free version)
+```{r}
+plot(rtoi, mode = "dates")
+```
