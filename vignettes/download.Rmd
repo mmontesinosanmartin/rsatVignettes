@@ -14,6 +14,58 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(rsatVignettes)
+# Download
+
+Downloading means acquiring the list of satellite images in a `records` from the appropriate *API* and save them on your machine.
+
+This demo builds on the showcase from the search vignette. The following code replicates the most important lines:
+
+```{r search_review}
+# region and time of interest
+ip <- st_sf(st_as_sfc(st_bbox(c(
+  xmin = -9.755859,
+  xmax =  4.746094,
+  ymin = 35.91557,
+  ymax = 44.02201 
+), crs = 4326)))
+toi <- seq(as.Date("2021-01-10"),as.Date("2021-01-15"),1)
+
+# database and dataset
+db.path <- "C:/database"
+ds.path <- "C:/datasets"
+dir.create(db.path)
+dir.create(ds.path)
+
+# rtoi
+filomena <- new_rtoi(name = "filomena",
+                     region = ip,
+                     db_path = db.path,
+                     rtoi_path = ds.path)
+
+# search MODIS Terra surface reflectance
+sat_search(region = filomena,
+           product = c("mod09ga"),
+           dates = toi)
 ```
+
+## Image acquisition
+
+Downloading is straightforward with the function `download()`. The simplest way to use the function is passing the `rtoi` as the only input. Depending on your internet connection, the following instruction may take a few minutes to run:
+
+```{r download_rtoi}
+download(filomena)
+```
+
+The function saves the satellite images automatically in the database specified in the `rtoi`:
+
+```{r download_database}
+list.files(get_database(filomena), recursive = TRUE)
+```
+
+Another way to do the download is using a `records` and providing the path where images should be saved (`out.dir`). The following code is equivalent to the first line of this section:
+
+```{r download_records}
+download(records(filomena), out.dir = get_database(filomena))
+```
+
+Note the the function reads the database checks whether the requested in the `rtoi` are already available in the destination path. This becomes handy when teams

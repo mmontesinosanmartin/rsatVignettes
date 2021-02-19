@@ -20,9 +20,38 @@ In `rsat`, ***customizing*** means transforming raw images into useful informati
 
 1.  
 
-2.  
+This demo builds on the showcase from the search vignette. The following code replicates the most important lines:
 
-3.  
+```{r download_review}
+# region and time of interest
+ip <- st_sf(st_as_sfc(st_bbox(c(
+  xmin = -9.755859,
+  xmax =  4.746094,
+  ymin = 35.91557,
+  ymax = 44.02201 
+), crs = 4326)))
+toi <- seq(as.Date("2021-01-10"),as.Date("2021-01-15"),1)
+
+# database and dataset
+db.path <- "C:/database"
+ds.path <- "C:/datasets"
+dir.create(db.path)
+dir.create(ds.path)
+
+# rtoi
+filomena <- new_rtoi(name = "filomena",
+                     region = ip,
+                     db_path = db.path,
+                     rtoi_path = ds.path)
+
+# search MODIS Terra surface reflectance
+sat_search(region = filomena,
+           product = c("mod09ga"),
+           dates = toi)
+
+# donwload
+download(filomena)
+```
 
 ------------------------------------------------------------------------
 
