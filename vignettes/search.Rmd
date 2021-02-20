@@ -16,10 +16,7 @@ knitr::opts_chunk$set(
 
 # Search
 
-In `rsat`, searching means locating the satellite images of a desired data product for a given region and time of interest (referred to as *roi* and *toi* henceforth). It requires:
-
-1.  [**Getting access**], i.e. creating a profile in two online data portals and managing your credentials in `R`.
-2.  [**Doing a search**], i.e. finding, previewing, and filtering the available information for a *roi* and *toi*.
+In `rsat`, **searching** means locating the satellite images of a desired data product for a given region and time of interest (referred to as *roi* and *toi* henceforth). Searching requires **getting access** to satellite imagery and **doing a search** (Section 2), i.e. finding, previewing, and filtering the available information for a *roi* and *toi*.
 
 ------------------------------------------------------------------------
 
@@ -301,7 +298,7 @@ plot(filomena,
 plot(filomena, "dates")
 ```
 
-The following vignette explains how to download the satellite images and the role of the *database* when managing multiple `rtois`. To reduce the processing times and memory space, the showcase is restricted to MODIS images from here onward:
+The following vignette explains how to download the satellite images and the role of the *database* when managing multiple `rtoi`s. To reduce the processing times and memory space, the showcase is restricted to MODIS images from here onward:
 
 ```{r rtoi_lightening}
 rcd <- records(filomena)
